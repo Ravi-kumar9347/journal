@@ -21,7 +21,7 @@ class _EditEntryState extends State<EditEntry> {
   void initState() {
     super.initState();
     _formatDates = FormatDates();
-    _moodIcons = MoodIcons();
+    _moodIcons = const MoodIcons();
     _noteController = TextEditingController();
     _noteController?.text = '';
   }
@@ -40,22 +40,22 @@ class _EditEntryState extends State<EditEntry> {
   }
 
   Future<String> _selectDate(String selectedDate) async {
-    DateTime _initialDate = DateTime.parse(selectedDate);
-    final DateTime? _pickedDate = await showDatePicker(
+    DateTime initialDate = DateTime.parse(selectedDate);
+    final DateTime? pickedDate = await showDatePicker(
         context: context,
-        initialDate: _initialDate,
-        firstDate: DateTime.now().subtract(Duration(days: 365)),
-        lastDate: DateTime.now().add(Duration(days: 365)));
-    if (_pickedDate != null) {
+        initialDate: initialDate,
+        firstDate: DateTime.now().subtract(const Duration(days: 365)),
+        lastDate: DateTime.now().add(const Duration(days: 365)));
+    if (pickedDate != null) {
       selectedDate = DateTime(
-              _pickedDate.year,
-              _pickedDate.month,
-              _pickedDate.day,
-              _initialDate.hour,
-              _initialDate.minute,
-              _initialDate.second,
-              _initialDate.millisecond,
-              _initialDate.microsecond)
+              pickedDate.year,
+              pickedDate.month,
+              pickedDate.day,
+              initialDate.hour,
+              initialDate.minute,
+              initialDate.second,
+              initialDate.millisecond,
+              initialDate.microsecond)
           .toString();
     }
     return selectedDate;
@@ -77,8 +77,8 @@ class _EditEntryState extends State<EditEntry> {
         automaticallyImplyLeading: false,
         elevation: 0,
         bottom: PreferredSize(
+          preferredSize: const Size.fromHeight(32),
           child: Container(),
-          preferredSize: Size.fromHeight(32),
         ),
         flexibleSpace: Container(
           decoration: BoxDecoration(
@@ -95,29 +95,29 @@ class _EditEntryState extends State<EditEntry> {
             children: [
               StreamBuilder(
                   stream: _journalEditBloc?.dateEdit,
-                  builder: (Context, snapshot) {
+                  builder: (context, snapshot) {
                     if (!snapshot.hasData) return Container();
                     return TextButton(
                       child: Row(
                         children: [
-                          Icon(
+                          const Icon(
                             Icons.calendar_today,
                             size: 22,
                             color: Colors.black54,
                           ),
-                          SizedBox(
+                          const SizedBox(
                             width: 16,
                           ),
                           Text(
                             _formatDates?.dateFormatShortMonthDayYear(
                                     snapshot.data!) ??
                                 '',
-                            style: TextStyle(
+                            style: const TextStyle(
                               color: Colors.black54,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
-                          Icon(
+                          const Icon(
                             Icons.arrow_drop_down,
                             color: Colors.black54,
                           ),
@@ -125,8 +125,8 @@ class _EditEntryState extends State<EditEntry> {
                       ),
                       onPressed: () async {
                         FocusScope.of(context).requestFocus(FocusNode());
-                        String _pickerDate = await _selectDate(snapshot.data!);
-                        _journalEditBloc?.dateEditChanged.add(_pickerDate);
+                        String pickerDate = await _selectDate(snapshot.data!);
+                        _journalEditBloc?.dateEditChanged.add(pickerDate);
                       },
                     );
                   }),
@@ -151,6 +151,9 @@ class _EditEntryState extends State<EditEntry> {
                           value: selected,
                           child: Row(
                             children: [
+                              const SizedBox(
+                                width: 10,
+                              ),
                               Transform(
                                 transform: Matrix4.identity()
                                   ..rotateZ(_moodIcons?.getMoodRotation(
@@ -163,7 +166,7 @@ class _EditEntryState extends State<EditEntry> {
                                       _moodIcons?.getMoodColor(selected.title!),
                                 ),
                               ),
-                              SizedBox(
+                              const SizedBox(
                                 width: 16,
                               ),
                               Text(
@@ -181,14 +184,17 @@ class _EditEntryState extends State<EditEntry> {
                   if (!snapshot.hasData) return Container();
                   _noteController?.value =
                       _noteController?.value.copyWith(text: snapshot.data) ??
-                          TextEditingValue();
+                          const TextEditingValue();
                   return TextField(
                     controller: _noteController,
                     textInputAction: TextInputAction.newline,
                     textCapitalization: TextCapitalization.sentences,
-                    decoration: InputDecoration(
+                    decoration: const InputDecoration(
                       labelText: 'Note',
-                      icon: Icon(Icons.subject),
+                      icon: SizedBox(
+                        width: 40.0,
+                        child: Icon(Icons.subject),
+                      ),
                     ),
                     maxLines: null,
                     onChanged: (note) =>
@@ -200,25 +206,25 @@ class _EditEntryState extends State<EditEntry> {
                 mainAxisAlignment: MainAxisAlignment.end,
                 children: [
                   TextButton(
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateColor.resolveWith(
+                          (states) => Colors.lightGreen.shade100),
+                    ),
+                    onPressed: () {
+                      _addorUpdateJournal();
+                    },
+                    child: const Text('Save'),
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  TextButton(
                       onPressed: () {
                         Navigator.pop(context);
                       },
-                      child: Text('Cancel'))
+                      child: const Text('Cancel'))
                 ],
               ),
-              SizedBox(
-                width: 8,
-              ),
-              TextButton(
-                style: ButtonStyle(
-                  backgroundColor: MaterialStateColor.resolveWith(
-                      (states) => Colors.lightGreen.shade100),
-                ),
-                onPressed: () {
-                  _addorUpdateJournal();
-                },
-                child: Text('Save'),
-              )
             ],
           ),
         ),

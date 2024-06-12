@@ -52,43 +52,44 @@ class LoginBloc with Validators {
   }
 
   void _updateEnableLoginCreateButtonStream() {
-    if (_emailValid == true && _passwordValid == true)
+    if (_emailValid == true && _passwordValid == true) {
       enableLoginCreateButtonChanged.add(true);
-    else
+    } else {
       enableLoginCreateButtonChanged.add(false);
+    }
   }
 
   Future<String?> _logIn() async {
-    String _result = '';
+    String result = '';
     if (_emailValid && _passwordValid) {
       await authenticationApi
           .signInWithEmailAndPassword(email: _email, password: _password)
           .then((user) {
-        _result = 'Success';
+        result = 'Success';
       }).catchError((error) {
-        _result = error;
+        result = error;
       });
-      return _result;
+      return result;
     } else
       return 'Email and Password are not Valid';
   }
 
   Future<String?> _createAccount() async {
-    String _result = '';
+    String result = '';
     if (_emailValid && _passwordValid) {
       await authenticationApi
           .createUserWithEmailAndPassword(email: _email, password: _password)
           .then((user) {
-        _result = 'Created user: $user';
+        result = 'Created user: $user';
         authenticationApi
             .signInWithEmailAndPassword(email: _email, password: _password)
             .then((user) {
-          _result = 'logged in user: $user';
+          result = 'logged in user: $user';
         }).catchError((error) async {
-          _result = error;
+          result = error;
         });
       }).catchError(((error) async {}));
-      return _result;
+      return result;
     } else {
       return 'Error creating User';
     }

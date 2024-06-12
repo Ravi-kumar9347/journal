@@ -26,18 +26,19 @@ class _LoginState extends State<Login> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        bottom: PreferredSize(
+        bottom: const PreferredSize(
+          preferredSize: Size.fromHeight(40),
           child: Icon(
             Icons.account_circle,
             size: 88,
             color: Colors.white,
           ),
-          preferredSize: Size.fromHeight(40),
         ),
       ),
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.only(top: 16, right: 32, bottom: 16, left: 16),
+          padding:
+              const EdgeInsets.only(top: 16, right: 32, bottom: 16, left: 16),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
@@ -48,7 +49,7 @@ class _LoginState extends State<Login> {
                     keyboardType: TextInputType.emailAddress,
                     decoration: InputDecoration(
                       labelText: 'Email Address',
-                      icon: Icon(Icons.mail_outline),
+                      icon: const Icon(Icons.mail_outline),
                       errorText: snapshot.error?.toString(),
                     ),
                     onChanged: _loginBloc.emailChanged.add,
@@ -62,7 +63,7 @@ class _LoginState extends State<Login> {
                     obscureText: true,
                     decoration: InputDecoration(
                       labelText: 'Password',
-                      icon: Icon(
+                      icon: const Icon(
                         Icons.security,
                       ),
                       errorText: snapshot.error?.toString(),
@@ -71,7 +72,7 @@ class _LoginState extends State<Login> {
                   );
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: 48,
               ),
               _buildLoginAndCreateButtons(),
@@ -88,12 +89,13 @@ class _LoginState extends State<Login> {
         stream: _loginBloc.loginOrCreateButton,
         builder: (context, snapshot) {
           print(snapshot.data);
-          if (snapshot.data == 'Login')
+          if (snapshot.data == 'Login') {
             return _buttonsLogin();
-          else if (snapshot.data == 'create Account')
+          } else if (snapshot.data == 'create Account') {
             return _buttonsCreateAccount();
-          else
+          } else {
             return Container();
+          }
         });
   }
 
@@ -109,20 +111,21 @@ class _LoginState extends State<Login> {
               style: ButtonStyle(
                   elevation: MaterialStateProperty.resolveWith((states) => 16),
                   backgroundColor: MaterialStateColor.resolveWith((states) {
-                    if (states.contains(MaterialState.disabled))
+                    if (states.contains(MaterialState.disabled)) {
                       return Colors.grey.shade100;
-                    else
+                    } else {
                       return Colors.lightGreen.shade200;
+                    }
                   })),
-              child: Text('Login'),
               onPressed: snapshot.data ?? false
                   ? () => _loginBloc.loginOrCreateChange.add('Login')
                   : () {},
+              child: const Text('Login'),
             );
           },
         ),
         TextButton(
-          child: Text('Create Account'),
+          child: const Text('Create Account'),
           onPressed: () {
             _loginBloc.loginOrCreateButtonChanged.add('create Account');
           },
@@ -140,26 +143,27 @@ class _LoginState extends State<Login> {
           stream: _loginBloc.enableLoginCreateButton,
           builder: (context, snapshot) {
             return ElevatedButton(
-                child: Text('Create Account'),
                 style: ButtonStyle(
                     elevation: MaterialStateProperty.all(16),
                     backgroundColor:
                         MaterialStateProperty.resolveWith((states) {
-                      if (states.contains(MaterialState.disabled))
+                      if (states.contains(MaterialState.disabled)) {
                         return Colors.grey.shade100;
-                      else
+                      } else {
                         return Colors.lightGreen.shade200;
+                      }
                     })),
                 onPressed: snapshot.data ?? false
                     ? () => _loginBloc.loginOrCreateChange.add('create Account')
-                    : () {});
+                    : () {},
+                child: const Text('Create Account'));
           },
         ),
         TextButton(
             onPressed: () {
               _loginBloc.loginOrCreateButtonChanged.add('Login');
             },
-            child: Text('Login'))
+            child: const Text('Login'))
       ],
     );
   }

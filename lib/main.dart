@@ -17,7 +17,7 @@ Future<void> main() async {
   );
 
   // Run the app
-  runApp(MyApp());
+  runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
@@ -26,40 +26,39 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    final AuthenticationService? _authenticationService =
+    final AuthenticationService? authenticationService =
         AuthenticationService();
-    final AuthenticationBloc? _authenticationBloc =
-        AuthenticationBloc(_authenticationService!);
+    final AuthenticationBloc? authenticationBloc =
+        AuthenticationBloc(authenticationService!);
     return AuthenticationBlocProvider(
+        authenticationBloc: authenticationBloc!,
         child: StreamBuilder(
           initialData: null,
-          stream: _authenticationBloc?.user,
+          stream: authenticationBloc?.user,
           builder: (context, snapshot) {
             print(AuthenticationBlocProvider.of(context));
-            if (snapshot.connectionState == ConnectionState.waiting)
+            if (snapshot.connectionState == ConnectionState.waiting) {
               return Center(
                 child: Container(
                   height: 30,
                   width: 30,
                   color: Colors.lightGreen,
-                  child: CircularProgressIndicator(),
+                  child: const CircularProgressIndicator(),
                 ),
               );
-            else if (snapshot.hasData) {
+            } else if (snapshot.hasData) {
               return HomeBlocProvider(
-                child: _buildMaterialApp(
-                  MyHomePage(),
-                ),
                 uid: snapshot.data,
-                homeBloc:
-                    HomeBloc(DbFireStoreService(), _authenticationService),
+                homeBloc: HomeBloc(DbFireStoreService(), authenticationService),
+                child: _buildMaterialApp(
+                  const MyHomePage(),
+                ),
               );
             } else {
               return _buildMaterialApp(Login());
             }
           },
-        ),
-        authenticationBloc: _authenticationBloc!);
+        ));
   }
 
   MaterialApp _buildMaterialApp(Widget homePage) {
@@ -78,7 +77,7 @@ class MyApp extends StatelessWidget {
           // is not restarted.
           primarySwatch: Colors.lightGreen,
           canvasColor: Colors.lightGreen.shade50,
-          bottomAppBarTheme: BottomAppBarTheme(color: Colors.lightGreen)),
+          bottomAppBarTheme: const BottomAppBarTheme(color: Colors.lightGreen)),
       home: homePage,
     );
   }
